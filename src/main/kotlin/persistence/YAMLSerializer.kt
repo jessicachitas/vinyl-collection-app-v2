@@ -8,6 +8,9 @@ import java.io.File
 import java.io.FileReader
 import java.io.FileWriter
 
+//-------------------------------------------------------------
+//IMPORTANT: Help was used from ChatGPT to add YAML to the code
+//-------------------------------------------------------------
 class YamlSerializer(private val file: File) : Serializer {
     @Throws(Exception::class)
     override fun read(): Any {
