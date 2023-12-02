@@ -63,18 +63,18 @@ class CollectionAPI() {
             collections.filter { collection -> collection.collectionName.contains(searchString, ignoreCase = true) }
         )
 
-    fun searchVinylByContents(searchString: String): String {
+    fun searchVinylByName(searchString: String): String {
         return if (numberOfCollections() == 0) "No collections stored"
         else {
             var listOfCollections = ""
             for (collection in collections) {
                 for (vinyl in collection.vinyls) {
-                    if (vinyl.vinylContents.contains(searchString, ignoreCase = true)) {
+                    if (vinyl.albumName.contains(searchString, ignoreCase = true)) {
                         listOfCollections += "${collection.collectionId}: ${collection.collectionName} \n\t${vinyl}\n"
                     }
                 }
             }
-            if (listOfCollections == "") "No items found for: $searchString"
+            if (listOfCollections == "") "No vinyls found for: $searchString"
             else listOfCollections
         }
     }
