@@ -8,6 +8,9 @@ import kotlin.system.exitProcess
 
 private val collectionAPI = CollectionAPI()
 
+//TODO (Issue 3) Add YAML Serializer
+//TODO (Issue 5) Correct CollectionAPITest.kt
+//TODO (Issue 6) Fix UI and add nice colours
 fun main() = runMenu()
 
 fun runMenu() {
@@ -20,9 +23,9 @@ fun runMenu() {
             5 -> archiveCollection()
             6 -> addVinylToCollection()
             7 -> updateVinylContentsInCollection()
-            8 -> deleteACollection()
+            8 -> deleteAVinyl()
             10 -> searchCollections()
-            15 -> searchVinyls()
+            15 -> searchVinylByName()
             0 -> exitApp()
             else -> println("Invalid menu choice: $option")
         }
@@ -32,21 +35,21 @@ fun runMenu() {
 fun mainMenu() = readNextInt(
     """ 
          > -----------------------------------------------------  
-         > |                  NOTE KEEPER APP                  |
+         > |              Vinyl Collection App                 |
          > -----------------------------------------------------  
-         > | NOTE MENU                                         |
-         > |   1) Add a note                                   |
-         > |   2) List notes                                   |
-         > |   3) Update a note                                |
-         > |   4) Delete a note                                |
-         > |   5) Archive a note                               |
+         > | COLLECTION MENU                                   |
+         > |   1) Add a collection                             |
+         > |   2) List collections                             |
+         > |   3) Update a collection                          |
+         > |   4) Delete a collection                          |
+         > |   5) Archive a collection                         |
          > -----------------------------------------------------  
-         > | ITEM MENU                                         | 
-         > |   6) Add item to a note                           |
-         > |   7) Update item contents on a note               |
-         > |   8) Delete item from a note                      |
+         > | VINYL MENU                                        | 
+         > |   6) Add vinyl to a collection                    |
+         > |   7) Update vinyl contents on a collection        |
+         > |   8) Delete vinyl from a collection               |
          > -----------------------------------------------------  
-         > | REPORT MENU FOR NOTES                             | 
+         > | REPORT MENU FOR COLLECTION                        | 
          > |   10) Search for all notes (by note title)        |
          > |   11) .....                                       |
          > |   12) .....                                       |
@@ -70,7 +73,7 @@ fun mainMenu() = readNextInt(
 //------------------------------------
 fun addCollection() {
     val collectionName = readNextLine("Enter a name for the collection: ")
-    val isAdded = collectionAPI.add(collection(collectionName = collectionName))
+    val isAdded = collectionAPI.add(Collection(collectionName = collectionName))
 
     if (isAdded) {
         println("Added Successfully")
@@ -157,21 +160,37 @@ fun archiveCollection() {
 //ITEM MENU (only available for active notes)
 //-------------------------------------------
 private fun addVinylToCollection() {
-    val collection: Collection? = askUserToChooseActiveNote()
+    val collection: Collection? = askUserToChooseActiveCollection()
     if (collection != null) {
-        if (collection.addVinyl(Vinyl(albumName = readNextLine("\t Album Name: "), artist = readNextLine()))))
+        if (collection.addVinyl(Vinyl(
+                albumName = readNextLine("\t Album Name: "),
+                artist = readNextLine("\t Artist: "),
+                genre = readNextLine("\t Genre: "),
+                sizeInches = readNextInt("\t Size in inches (7inch, 10inch, 12inch): "),
+                colour = readNextLine("\t Colour: ")
+            )))
             println("Add Successful!")
         else println("Add NOT Successful")
     }
 }
 
-fun updateItemContentsInNote() {
-    val note: Note? = askUserToChooseActiveNote()
-    if (note != null) {
-        val item: Item? = askUserToChooseItem(note)
-        if (item != null) {
-            val newContents = readNextLine("Enter new contents: ")
-            if (note.update(item.itemId, Item(itemContents = newContents))) {
+fun updateVinylContentsInCollection() {
+    val collection: Collection? = askUserToChooseActiveCollection()
+    if (collection != null) {
+        val vinyl: Vinyl? = askUserToChooseVinyl(collection)
+        if (vinyl != null) {
+            val newAlbumName = readNextLine("Enter new album name: ")
+            val newArtist = readNextLine("Enter new artist: ")
+            val newGenre = readNextLine("Enter new genre: ")
+            val newSize = readNextInt("Enter new size in inches (7inch, 10inch, 12inch): ")
+            val newColour = readNextLine("Enter new colour: ")
+            if (collection.update(vinyl.vinylId, Vinyl(
+                    albumName = newAlbumName,
+                    artist = newArtist,
+                    genre = newGenre,
+                    sizeInches = newSize,
+                    colour = newColour
+            ))) {
                 println("Item contents updated")
             } else {
                 println("Item contents NOT updated")
@@ -182,12 +201,12 @@ fun updateItemContentsInNote() {
     }
 }
 
-fun deleteAnItem() {
-    val note: Note? = askUserToChooseActiveNote()
-    if (note != null) {
-        val item: Item? = askUserToChooseItem(note)
-        if (item != null) {
-            val isDeleted = note.delete(item.itemId)
+fun deleteAVinyl() {
+    val collection: Collection? = askUserToChooseActiveCollection()
+    if (collection != null) {
+        val vinyl: Vinyl? = askUserToChooseVinyl(collection)
+        if (vinyl != null) {
+            val isDeleted = collection.delete(vinyl.vinylId)
             if (isDeleted) {
                 println("Delete Successful!")
             } else {
@@ -200,11 +219,11 @@ fun deleteAnItem() {
 //------------------------------------
 //NOTE REPORTS MENU
 //------------------------------------
-fun searchNotes() {
-    val searchTitle = readNextLine("Enter the description to search by: ")
-    val searchResults = noteAPI.searchNotesByTitle(searchTitle)
+fun searchCollections() {
+    val searchTitle = readNextLine("Enter the name of collection you want to search: ")
+    val searchResults = collectionAPI.searchCollectionByTitle(searchTitle)
     if (searchResults.isEmpty()) {
-        println("No notes found")
+        println("No collections found")
     } else {
         println(searchResults)
     }
@@ -213,15 +232,16 @@ fun searchNotes() {
 //------------------------------------
 //ITEM REPORTS MENU
 //------------------------------------
-fun searchItems() {
-    val searchContents = readNextLine("Enter the item contents to search by: ")
-    val searchResults = noteAPI.searchItemByContents(searchContents)
+fun searchVinylByName() {
+    val searchContents = readNextLine("Enter the album name to search by: ")
+    val searchResults = collectionAPI.searchVinylByName(searchContents)
     if (searchResults.isEmpty()) {
-        println("No items found")
+        println("No vinyls found")
     } else {
         println(searchResults)
     }
 }
+//TODO (Issue 4) Add searchVinylByArtist, searchVinylByGenre, searchVinylBySize, searchVinylByColour
 
 //------------------------------------
 // Exit App
@@ -235,30 +255,30 @@ fun exitApp() {
 //HELPER FUNCTIONS
 //------------------------------------
 
-private fun askUserToChooseActiveNote(): Note? {
-    listActiveNotes()
-    if (noteAPI.numberOfActiveNotes() > 0) {
-        val note = noteAPI.findNote(readNextInt("\nEnter the id of the note: "))
-        if (note != null) {
-            if (note.isNoteArchived) {
-                println("Note is NOT Active, it is Archived")
+private fun askUserToChooseActiveCollection(): Collection? {
+    listActiveCollections()
+    if (collectionAPI.numberOfActiveCollections() > 0) {
+        val collection = collectionAPI.findCollection(readNextInt("\nEnter the id of the collection: "))
+        if (collection != null) {
+            if (collection.isCollectionArchived) {
+                println("Collection is NOT Active, it is Archived")
             } else {
-                return note //chosen note is active
+                return collection //chosen note is active
             }
         } else {
-            println("Note id is not valid")
+            println("Collection id is not valid")
         }
     }
     return null //selected note is not active
 }
 
-private fun askUserToChooseItem(note: Note): Item? {
-    if (note.numberOfItems() > 0) {
-        print(note.listItems())
-        return note.findOne(readNextInt("\nEnter the id of the item: "))
+private fun askUserToChooseVinyl(collection: Collection): Vinyl? {
+    if (collection.numberOfVinyls() > 0) {
+        print(collection.listVinyls())
+        return collection.findOne(readNextInt("\nEnter the id of the vinyl: "))
     }
     else{
-        println ("No items for chosen note")
+        println ("No vinyls for chosen collection")
         return null
     }
 }
