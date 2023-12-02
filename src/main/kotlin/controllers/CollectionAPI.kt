@@ -1,10 +1,14 @@
 package controllers
 
 import models.Collection
+import persistence.JSONSerializer
+import persistence.Serializer
 import utils.Utilities.formatListString
 import java.util.ArrayList
 
-class CollectionAPI() {
+class CollectionAPI(serializerType: Serializer) {
+
+    private var serializer: Serializer = serializerType
 
     private var collections = ArrayList<Collection>()
 
@@ -77,5 +81,15 @@ class CollectionAPI() {
             if (listOfCollections == "") "No vinyls found for: $searchString"
             else listOfCollections
         }
+    }
+
+    @Throws(Exception::class)
+    fun load() {
+        collections = serializer.read() as ArrayList<Collection>
+    }
+
+    @Throws(Exception::class)
+    fun store() {
+        serializer.write(collections)
     }
 }

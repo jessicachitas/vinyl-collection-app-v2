@@ -5,5 +5,4 @@ data class Vinyl( var vinylId: Int = 0,
                  var artist: String = "",
                  var genre: String = "",
                  var sizeInches: Int,
-                 var colour : String = "",
-                 var isVinylArchived: Boolean = false)
+                 var colour : String = "")
