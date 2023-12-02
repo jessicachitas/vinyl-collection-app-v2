@@ -1,12 +1,13 @@
 import controllers.CollectionAPI
 import models.Vinyl
 import models.Collection
-import utils.ScannerInput.readNextChar
 import utils.ScannerInput.readNextInt
 import utils.ScannerInput.readNextLine
 import kotlin.system.exitProcess
+import persistence.YamlSerializer
+import java.io.File
 
-private val collectionAPI = CollectionAPI()
+private val collectionAPI = CollectionAPI(YamlSerializer(File("collection.yaml")))
 
 //TODO (Issue 3) Add YAML Serializer
 //TODO (Issue 5) Correct CollectionAPITest.kt
@@ -26,6 +27,8 @@ fun runMenu() {
             8 -> deleteAVinyl()
             10 -> searchCollections()
             15 -> searchVinylByName()
+            98 -> save()
+            99 -> load()
             0 -> exitApp()
             else -> println("Invalid menu choice: $option")
         }
@@ -244,8 +247,29 @@ fun searchVinylByName() {
 //TODO (Issue 4) Add searchVinylByArtist, searchVinylByGenre, searchVinylBySize, searchVinylByColour
 
 //------------------------------------
+// Save and Load
+//------------------------------------
+
+fun save() {
+    try {
+        collectionAPI.store()
+    } catch (e: Exception) {
+        System.err.println("Error writing to file: $e")
+    }
+}
+
+fun load() {
+    try {
+        collectionAPI.load()
+    } catch (e: Exception) {
+        System.err.println("Error reading from file: $e")
+    }
+}
+
+//------------------------------------
 // Exit App
 //------------------------------------
+
 fun exitApp() {
     println("Exiting...bye")
     exitProcess(0)

@@ -1,0 +1,12 @@
+- !!models.Collection
+  collectionArchived: false
+  collectionId: 0
+  collectionName: Test YAML
+  vinyls: !!set
+    ? albumName: the record
+      artist: boygenius
+      colour: Clear
+      genre: Indie Rock
+      sizeInches: 12
+      vinylId: 0
+    : null
