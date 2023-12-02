@@ -9,7 +9,6 @@ import java.io.File
 
 private val collectionAPI = CollectionAPI(YamlSerializer(File("collection.yaml")))
 
-//TODO (Issue 3) Add YAML Serializer
 //TODO (Issue 5) Correct CollectionAPITest.kt
 //TODO (Issue 6) Fix UI and add nice colours
 fun main() = runMenu()
@@ -27,6 +26,9 @@ fun runMenu() {
             8 -> deleteAVinyl()
             10 -> searchCollections()
             15 -> searchVinylByName()
+            16 -> searchVinylByArtist()
+            17 -> searchVinylByGenre()
+            18 -> searchVinylByColour()
             98 -> save()
             99 -> load()
             0 -> exitApp()
@@ -53,19 +55,16 @@ fun mainMenu() = readNextInt(
          > |   8) Delete vinyl from a collection               |
          > -----------------------------------------------------  
          > | REPORT MENU FOR COLLECTION                        | 
-         > |   10) Search for all notes (by note title)        |
-         > |   11) .....                                       |
-         > |   12) .....                                       |
-         > |   13) .....                                       |
-         > |   14) .....                                       |
+         > |   10) Search for collection by title              |
          > -----------------------------------------------------  
          > | REPORT MENU FOR ITEMS                             |                                
-         > |   15) Search for all items (by item description)  |
-         > |   16) List TODO Items                             |
-         > |   17) .....                                       |
-         > |   18) .....                                       |
-         > |   19) .....                                       |
+         > |   15) Search for a vinyl by name                  |
+         > |   16) Search for a vinyl by artist                |
+         > |   17) Search for a vinyl by genre                 |
+         > |   18) Search for a vinyl by colour                |
          > -----------------------------------------------------  
+         > |   98) Save                                        |
+         > |   99) Load                                        |
          > |   0) Exit                                         |
          > -----------------------------------------------------  
          > ==>> """.trimMargin(">")
@@ -169,7 +168,7 @@ private fun addVinylToCollection() {
                 albumName = readNextLine("\t Album Name: "),
                 artist = readNextLine("\t Artist: "),
                 genre = readNextLine("\t Genre: "),
-                sizeInches = readNextInt("\t Size in inches (7inch, 10inch, 12inch): "),
+                sizeInches = readNextInt("\t Size in inches (7, 10, 12): "),
                 colour = readNextLine("\t Colour: ")
             )))
             println("Add Successful!")
@@ -185,7 +184,7 @@ fun updateVinylContentsInCollection() {
             val newAlbumName = readNextLine("Enter new album name: ")
             val newArtist = readNextLine("Enter new artist: ")
             val newGenre = readNextLine("Enter new genre: ")
-            val newSize = readNextInt("Enter new size in inches (7inch, 10inch, 12inch): ")
+            val newSize = readNextInt("Enter new size in inches (7, 10, 12): ")
             val newColour = readNextLine("Enter new colour: ")
             if (collection.update(vinyl.vinylId, Vinyl(
                     albumName = newAlbumName,
@@ -244,6 +243,48 @@ fun searchVinylByName() {
         println(searchResults)
     }
 }
+
+fun searchVinylByArtist() {
+    val searchContents = readNextLine("Enter the artist name to search by: ")
+    val searchResults = collectionAPI.searchVinylByArtist(searchContents)
+    if (searchResults.isEmpty()) {
+        println("No vinyls found")
+    } else {
+        println(searchResults)
+    }
+}
+
+fun searchVinylByGenre() {
+    val searchContents = readNextLine("Enter the genre to search by: ")
+    val searchResults = collectionAPI.searchVinylByGenre(searchContents)
+    if (searchResults.isEmpty()) {
+        println("No vinyls found")
+    } else {
+        println(searchResults)
+    }
+}
+
+//fun searchVinylBySize() {
+//    val searchContents = readNextInt("Enter the size in inches to search by (7, 10, 12): ")
+//    val searchResults = collectionAPI.searchVinylBySize(searchContents)
+//    if (searchResults.isEmpty()) {
+//        println("No vinyls found")
+//    } else {
+//        println(searchResults)
+//    }
+//}
+
+fun searchVinylByColour() {
+    val searchContents = readNextLine("Enter the colour to search by: ")
+    val searchResults = collectionAPI.searchVinylByColour(searchContents)
+    if (searchResults.isEmpty()) {
+        println("No vinyls found")
+    } else {
+        println(searchResults)
+    }
+}
+
+
 //TODO (Issue 4) Add searchVinylByArtist, searchVinylByGenre, searchVinylBySize, searchVinylByColour
 
 //------------------------------------
