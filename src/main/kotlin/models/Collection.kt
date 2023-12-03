@@ -29,8 +29,6 @@ data class Collection ( var collectionId: Int = 0,
     fun update(id: Int, newVinyl : Vinyl): Boolean {
         val foundVinyl = findOne(id)
 
-        //if the object exists, use the details passed in the newItem parameter to
-        //update the found object in the Set
         if (foundVinyl != null){
             foundVinyl.albumName = newVinyl.albumName
             foundVinyl.artist = newVinyl.artist
@@ -40,7 +38,6 @@ data class Collection ( var collectionId: Int = 0,
             return true
         }
 
-        //if the object was not found, return false, indicating that the update was not successful
         return false
     }
 

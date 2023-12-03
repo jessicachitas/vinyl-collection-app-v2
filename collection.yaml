@@ -1,12 +1,52 @@
 - !!models.Collection
   collectionArchived: false
   collectionId: 0
-  collectionName: Test YAML
+  collectionName: test
   vinyls: !!set
-    ? albumName: the record
-      artist: boygenius
-      colour: Clear
-      genre: Indie Rock
+    ? albumName: stranger in the alps
+      artist: phoebe bridgers
+      colour: purple
+      genre: indie
       sizeInches: 12
       vinylId: 0
+    : null
+    ? albumName: punisher
+      artist: phoebe bridgers
+      colour: blue and green swirl
+      genre: indie
+      sizeInches: 12
+      vinylId: 1
+    : null
+    ? albumName: copycat killer
+      artist: phoebe bridgers feat. rob moose
+      colour: mountain blast
+      genre: classical
+      sizeInches: 12
+      vinylId: 2
+    : null
+- !!models.Collection
+  collectionArchived: false
+  collectionId: 1
+  collectionName: clear records
+  vinyls: !!set
+    ? albumName: this is why
+      artist: paramore
+      colour: clear
+      genre: alternative rock
+      sizeInches: 12
+      vinylId: 0
+    : null
+    ? albumName: the record
+      artist: boygenius
+      colour: clear
+      genre: indie rock
+      sizeInches: 12
+      vinylId: 1
+    : null
+    ? albumName: home video
+      artist: lucy dacus
+      colour: clear
+      genre: indie rock
+      sizeInches: 12
+      vinylId: 2
     : null

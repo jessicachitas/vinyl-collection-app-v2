@@ -9,26 +9,34 @@ import java.io.File
 
 private val collectionAPI = CollectionAPI(YamlSerializer(File("collection.yaml")))
 
-//TODO (Issue 5) Correct CollectionAPITest.kt
-//TODO (Issue 6) Fix UI and add nice colours
+const val colourReset = "\u001b[0m"
+const val magenta = "\u001b[35m"
+const val cyan = "\u001b[36m"
+
 fun main() = runMenu()
+
+//--------------
+// Menu UIs
+//--------------
 
 fun runMenu() {
     do {
         when (val option = mainMenu()) {
-            1 -> addCollection()
-            2 -> listCollections()
-            3 -> updateCollection()
-            4 -> deleteCollection()
-            5 -> archiveCollection()
-            6 -> addVinylToCollection()
-            7 -> updateVinylContentsInCollection()
-            8 -> deleteAVinyl()
-            10 -> searchCollections()
-            15 -> searchVinylByName()
-            16 -> searchVinylByArtist()
-            17 -> searchVinylByGenre()
-            18 -> searchVinylByColour()
+            1 -> collectionMenu()
+            2 -> vinylMenu()
+//            1 -> addCollection()
+//            2 -> listCollections()
+//            3 -> updateCollection()
+//            4 -> deleteCollection()
+//            5 -> archiveCollection()
+//            6 -> addVinylToCollection()
+//            7 -> updateVinylContentsInCollection()
+//            8 -> deleteAVinyl()
+//            10 -> searchCollections()
+//            15 -> searchVinylByName()
+//            16 -> searchVinylByArtist()
+//            17 -> searchVinylByGenre()
+//            18 -> searchVinylByColour()
             98 -> save()
             99 -> load()
             0 -> exitApp()
@@ -38,40 +46,133 @@ fun runMenu() {
 }
 
 fun mainMenu() = readNextInt(
-    """ 
+    """ $magenta
          > -----------------------------------------------------  
-         > |              Vinyl Collection App                 |
+         > |           ┓ ┏┓     ┓     ┏┓  •    •  ┏┓           |
+         > |           ┃┃┃┣┓┏┓╋┏┣┓┏┓  ┗┓┏┓┓┏┓┏┓┓┏┓┏┛           |
+         > |           ┗┻┛┛┗┗┻┗┗┛┗┗┻  ┗┛┣┛┗┛┗┛┗┗┛┗•            |
+         > |                            ┛                      |
+         > ----------------------------------------------------- $colourReset
+         > |                   $cyan MAIN MENU $colourReset                     | 
+         > | $magenta  1)$colourReset Collection Menu                              |
+         > | $magenta  2)$colourReset Vinyl Menu                                   |
          > -----------------------------------------------------  
-         > | COLLECTION MENU                                   |
-         > |   1) Add a collection                             |
-         > |   2) List collections                             |
-         > |   3) Update a collection                          |
-         > |   4) Delete a collection                          |
-         > |   5) Archive a collection                         |
-         > -----------------------------------------------------  
-         > | VINYL MENU                                        | 
-         > |   6) Add vinyl to a collection                    |
-         > |   7) Update vinyl contents on a collection        |
-         > |   8) Delete vinyl from a collection               |
-         > -----------------------------------------------------  
-         > | REPORT MENU FOR COLLECTION                        | 
-         > |   10) Search for collection by title              |
-         > -----------------------------------------------------  
-         > | REPORT MENU FOR ITEMS                             |                                
-         > |   15) Search for a vinyl by name                  |
-         > |   16) Search for a vinyl by artist                |
-         > |   17) Search for a vinyl by genre                 |
-         > |   18) Search for a vinyl by colour                |
-         > -----------------------------------------------------  
-         > |   98) Save                                        |
-         > |   99) Load                                        |
-         > |   0) Exit                                         |
+         > | $cyan  98)$colourReset Save                                        |
+         > | $cyan  99)$colourReset Load                                        |
+         > | $magenta  0)$colourReset Exit                                         |
          > -----------------------------------------------------  
          > ==>> """.trimMargin(">")
 )
 
+//fun mainMenu() = readNextInt(
+//    """
+//         > -----------------------------------------------------
+//         > |              Vinyl Collection App                 |
+//         > -----------------------------------------------------
+//         > | COLLECTION MENU                                   |
+//         > |   1) Add a collection                             |
+//         > |   2) List collections                             |
+//         > |   3) Update a collection                          |
+//         > |   4) Delete a collection                          |
+//         > |   5) Archive a collection                         |
+//         > -----------------------------------------------------
+//         > | VINYL MENU                                        |
+//         > |   6) Add vinyl to a collection                    |
+//         > |   7) Update vinyl contents on a collection        |
+//         > |   8) Delete vinyl from a collection               |
+//         > -----------------------------------------------------
+//         > | REPORT MENU FOR COLLECTION                        |
+//         > |   10) Search for collection by title              |
+//         > -----------------------------------------------------
+//         > | REPORT MENU FOR ITEMS                             |
+//         > |   15) Search for a vinyl by name                  |
+//         > |   16) Search for a vinyl by artist                |
+//         > |   17) Search for a vinyl by genre                 |
+//         > |   18) Search for a vinyl by colour                |
+//         > -----------------------------------------------------
+//         > |   98) Save                                        |
+//         > |   99) Load                                        |
+//         > |   0) Exit                                         |
+//         > -----------------------------------------------------
+//         > ==>> """.trimMargin(">")
+//)
+
+fun collectionMenu() {
+    val option = readNextInt(
+        """$magenta
+         > -----------------------------------------------------  
+         > |           ┓ ┏┓     ┓     ┏┓  •    •  ┏┓           |
+         > |           ┃┃┃┣┓┏┓╋┏┣┓┏┓  ┗┓┏┓┓┏┓┏┓┓┏┓┏┛           |
+         > |           ┗┻┛┛┗┗┻┗┗┛┗┗┻  ┗┛┣┛┗┛┗┛┗┗┛┗•            |
+         > |                            ┛                      |
+         > ----------------------------------------------------- $colourReset  
+         > |                $cyan COLLECTION MENU $colourReset                  |
+         > |  $magenta 1)$colourReset Add a collection                             |
+         > |  $magenta 2)$colourReset List collections                             |
+         > |  $magenta 3)$colourReset Update a collection                          |
+         > |  $magenta 4)$colourReset Delete a collection                          |
+         > |  $magenta 5)$colourReset Archive a collection                         |
+         > -----------------------------------------------------  
+         > |           $cyan SEARCH MENU FOR COLLECTION $colourReset            | 
+         > |  $magenta 10)$colourReset Search for collection by title              |
+         > -----------------------------------------------------
+         > |  $cyan 99)$colourReset Back to Main Menu                           |
+         > ----------------------------------------------------- 
+         > ==>> """.trimMargin(">")
+    )
+
+    when (option) {
+        1 -> addCollection()
+        2 -> listCollections()
+        3 -> updateCollection()
+        4 -> deleteCollection()
+        5 -> archiveCollection()
+        10 -> searchCollections()
+        99 -> mainMenu()
+        else -> println("Invalid option entered: $option")
+    }
+}
+
+fun vinylMenu() {
+    val option = readNextInt(
+        """$magenta
+         > -----------------------------------------------------  
+         > |           ┓ ┏┓     ┓     ┏┓  •    •  ┏┓           |
+         > |           ┃┃┃┣┓┏┓╋┏┣┓┏┓  ┗┓┏┓┓┏┓┏┓┓┏┓┏┛           |
+         > |           ┗┻┛┛┗┗┻┗┗┛┗┗┻  ┗┛┣┛┗┛┗┛┗┗┛┗•            |
+         > |                            ┛                      |
+         > ----------------------------------------------------- $colourReset
+         > |                   $cyan VINYL MENU $colourReset                    | 
+         > |  $magenta 6)$colourReset Add vinyl to a collection                    |
+         > |  $magenta 7)$colourReset Update vinyl contents on a collection        |
+         > |  $magenta 8)$colourReset Delete vinyl from a collection               |
+         > ----------------------------------------------------- 
+         > |             $cyan SEARCH MENU FOR VINYLS $colourReset              |                                
+         > |  $magenta 15)$colourReset Search for a vinyl by name                  |
+         > |  $magenta 16)$colourReset Search for a vinyl by artist                |
+         > |  $magenta 17)$colourReset Search for a vinyl by genre                 |
+         > |  $magenta 18)$colourReset Search for a vinyl by colour                |
+         > -----------------------------------------------------  
+         > |  $cyan 99)$colourReset Back to Main Menu                           |
+         > -----------------------------------------------------  
+         > ==>> """.trimMargin(">")
+    )
+
+    when (option) {
+        6 -> addVinylToCollection()
+        7 -> updateVinylContentsInCollection()
+        8 -> deleteAVinyl()
+        15 -> searchVinylByName()
+        16 -> searchVinylByArtist()
+        17 -> searchVinylByGenre()
+        18 -> searchVinylByColour()
+        99 -> mainMenu()
+        else -> println("Invalid option entered: $option")
+    }
+}
+
 //------------------------------------
-//NOTE MENU
+//  Collection Menu
 //------------------------------------
 fun addCollection() {
     val collectionName = readNextLine("Enter a name for the collection: ")
@@ -87,12 +188,19 @@ fun addCollection() {
 fun listCollections() {
     if (collectionAPI.numberOfCollections() > 0) {
         val option = readNextInt(
-            """
-                  > -------------------------------------
-                  > |   1) View ALL collections         |
-                  > |   2) View ACTIVE collections      |
-                  > |   3) View ARCHIVED collections    |
-                  > -------------------------------------
+            """$magenta
+            > -----------------------------------------------------  
+            > |           ┓ ┏┓     ┓     ┏┓  •    •  ┏┓           |
+            > |           ┃┃┃┣┓┏┓╋┏┣┓┏┓  ┗┓┏┓┓┏┓┏┓┓┏┓┏┛           |
+            > |           ┗┻┛┛┗┗┻┗┗┛┗┗┻  ┗┛┣┛┗┛┗┛┗┗┛┗•            |
+            > |                            ┛                      |
+            > ----------------------------------------------------- $colourReset
+            > |  $magenta 1)$colourReset View ALL collections                         |
+            > |  $magenta 2)$colourReset View ACTIVE collections                      |
+            > |  $magenta 3)$colourReset View ARCHIVED collections                    |
+            > -----------------------------------------------------
+            > |  $cyan 99)$colourReset Back to Collection Menu                     |
+            > -----------------------------------------------------
          > ==>> """.trimMargin(">")
         )
 
@@ -100,6 +208,7 @@ fun listCollections() {
             1 -> listAllCollections()
             2 -> listActiveCollections()
             3 -> listArchivedCollections()
+            99 -> collectionMenu()
             else -> println("Invalid option entered: $option")
         }
     } else {
@@ -114,7 +223,6 @@ fun listArchivedCollections() = println(collectionAPI.listArchivedCollections())
 fun updateCollection() {
     listCollections()
     if (collectionAPI.numberOfCollections() > 0) {
-        // only ask the user to choose the note if notes exist
         val id = readNextInt("Enter the id of the collection to update: ")
         if (collectionAPI.findCollection(id) != null) {
             val collectionName = readNextLine("Enter a name for the collection: ")
@@ -132,9 +240,7 @@ fun updateCollection() {
 fun deleteCollection() {
     listCollections()
     if (collectionAPI.numberOfCollections() > 0) {
-        // only ask the user to choose the note to delete if notes exist
         val id = readNextInt("Enter the id of the collection to delete: ")
-        // pass the index of the note to NoteAPI for deleting and check for success.
         val collectionToDelete = collectionAPI.delete(id)
         if (collectionToDelete) {
             println("Delete Successful!")
@@ -147,9 +253,7 @@ fun deleteCollection() {
 fun archiveCollection() {
     listActiveCollections()
     if (collectionAPI.numberOfActiveCollections() > 0) {
-        // only ask the user to choose the note to archive if active notes exist
         val id = readNextInt("Enter the id of the collection to archive: ")
-        // pass the index of the note to NoteAPI for archiving and check for success.
         if (collectionAPI.archiveCollection(id)) {
             println("Archive Successful!")
         } else {
@@ -158,9 +262,9 @@ fun archiveCollection() {
     }
 }
 
-//-------------------------------------------
-//ITEM MENU (only available for active notes)
-//-------------------------------------------
+//----------------------------------------------------
+//  Vinyl Menu (only available for active collections)
+//----------------------------------------------------
 private fun addVinylToCollection() {
     val collection: Collection? = askUserToChooseActiveCollection()
     if (collection != null) {
@@ -219,7 +323,7 @@ fun deleteAVinyl() {
 }
 
 //------------------------------------
-//NOTE REPORTS MENU
+//  Collection Search Menu
 //------------------------------------
 fun searchCollections() {
     val searchTitle = readNextLine("Enter the name of collection you want to search: ")
@@ -232,7 +336,7 @@ fun searchCollections() {
 }
 
 //------------------------------------
-//ITEM REPORTS MENU
+//  Vinyl Search Menu
 //------------------------------------
 fun searchVinylByName() {
     val searchContents = readNextLine("Enter the album name to search by: ")
@@ -314,7 +418,7 @@ fun exitApp() {
 }
 
 //------------------------------------
-//HELPER FUNCTIONS
+//  Helper Functions
 //------------------------------------
 
 private fun askUserToChooseActiveCollection(): Collection? {
