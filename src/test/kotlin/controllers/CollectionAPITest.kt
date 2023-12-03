@@ -1,6 +1,5 @@
 package controllers
 
-import models.Vinyl
 import models.Collection
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.*
@@ -15,8 +14,8 @@ class CollectionAPITest {
     private var summerVibes: Collection? = null
     private var sadAlbums: Collection? = null
 
-    private var populatedCollections: CollectionAPI? = CollectionAPI(YamlSerializer(File("collections.yaml")))
-    private var emptyCollections: CollectionAPI? = CollectionAPI(YamlSerializer(File("collections.yaml")))
+    private var populatedCollections: CollectionAPI? = CollectionAPI(YamlSerializer(File("collection.yaml")))
+    private var emptyCollections: CollectionAPI? = CollectionAPI(YamlSerializer(File("collection.yaml")))
 
     @BeforeEach
     fun setup() {
@@ -153,11 +152,11 @@ class CollectionAPITest {
         @Test
         fun `saving and loading an empty collection in YAML doesn't crash app`() {
 
-            val storingCollections = CollectionAPI(YamlSerializer(File("collections.yaml")))
+            val storingCollections = CollectionAPI(YamlSerializer(File("collection.yaml")))
             storingCollections.store()
 
             //Loading the empty notes.xml file into a new object
-            val loadedCollections = CollectionAPI(YamlSerializer(File("collections.yaml")))
+            val loadedCollections = CollectionAPI(YamlSerializer(File("collection.yaml")))
             loadedCollections.load()
 
             //Comparing the source of the notes (storingNotes) with the XML loaded notes (loadedNotes)
@@ -169,14 +168,14 @@ class CollectionAPITest {
         @Test
         fun `saving and loading an loaded collection in YAML doesn't loose data`() {
             // Storing 3 notes to the notes.XML file.
-            val storingCollections = CollectionAPI(YamlSerializer(File("collections.yaml")))
+            val storingCollections = CollectionAPI(YamlSerializer(File("collection.yaml")))
             storingCollections.add(phoebeBridgers!!)
             storingCollections.add(summerVibes!!)
             storingCollections.add(sadAlbums!!)
             storingCollections.store()
 
             //Loading notes.xml into a different collection
-            val loadedCollections = CollectionAPI(YamlSerializer(File("collections.yaml")))
+            val loadedCollections = CollectionAPI(YamlSerializer(File("collection.yaml")))
             loadedCollections.load()
 
             //Comparing the source of the notes (storingNotes) with the XML loaded notes (loadedNotes)

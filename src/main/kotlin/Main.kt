@@ -13,9 +13,11 @@ const val colourReset = "\u001b[0m"
 const val magenta = "\u001b[35m"
 const val cyan = "\u001b[36m"
 
-//TODO (Issue 5) Correct CollectionAPITest.kt
-//TODO (Issue 6) Fix UI and add nice colours
 fun main() = runMenu()
+
+//--------------
+// Menu UIs
+//--------------
 
 fun runMenu() {
     do {
@@ -140,12 +142,12 @@ fun vinylMenu() {
          > |           ┗┻┛┛┗┗┻┗┗┛┗┗┻  ┗┛┣┛┗┛┗┛┗┗┛┗•            |
          > |                            ┛                      |
          > ----------------------------------------------------- $colourReset
-         > |                   $cyan VINYL MENU                     | 
+         > |                   $cyan VINYL MENU $colourReset                    | 
          > |  $magenta 6)$colourReset Add vinyl to a collection                    |
          > |  $magenta 7)$colourReset Update vinyl contents on a collection        |
          > |  $magenta 8)$colourReset Delete vinyl from a collection               |
          > ----------------------------------------------------- 
-         > |             $cyan SEARCH MENU FOR VINYLS               |                                
+         > |             $cyan SEARCH MENU FOR VINYLS $colourReset              |                                
          > |  $magenta 15)$colourReset Search for a vinyl by name                  |
          > |  $magenta 16)$colourReset Search for a vinyl by artist                |
          > |  $magenta 17)$colourReset Search for a vinyl by genre                 |
@@ -170,7 +172,7 @@ fun vinylMenu() {
 }
 
 //------------------------------------
-//NOTE MENU
+//  Collection Menu
 //------------------------------------
 fun addCollection() {
     val collectionName = readNextLine("Enter a name for the collection: ")
@@ -221,7 +223,6 @@ fun listArchivedCollections() = println(collectionAPI.listArchivedCollections())
 fun updateCollection() {
     listCollections()
     if (collectionAPI.numberOfCollections() > 0) {
-        // only ask the user to choose the note if notes exist
         val id = readNextInt("Enter the id of the collection to update: ")
         if (collectionAPI.findCollection(id) != null) {
             val collectionName = readNextLine("Enter a name for the collection: ")
@@ -239,9 +240,7 @@ fun updateCollection() {
 fun deleteCollection() {
     listCollections()
     if (collectionAPI.numberOfCollections() > 0) {
-        // only ask the user to choose the note to delete if notes exist
         val id = readNextInt("Enter the id of the collection to delete: ")
-        // pass the index of the note to NoteAPI for deleting and check for success.
         val collectionToDelete = collectionAPI.delete(id)
         if (collectionToDelete) {
             println("Delete Successful!")
@@ -254,9 +253,7 @@ fun deleteCollection() {
 fun archiveCollection() {
     listActiveCollections()
     if (collectionAPI.numberOfActiveCollections() > 0) {
-        // only ask the user to choose the note to archive if active notes exist
         val id = readNextInt("Enter the id of the collection to archive: ")
-        // pass the index of the note to NoteAPI for archiving and check for success.
         if (collectionAPI.archiveCollection(id)) {
             println("Archive Successful!")
         } else {
@@ -265,9 +262,9 @@ fun archiveCollection() {
     }
 }
 
-//-------------------------------------------
-//ITEM MENU (only available for active notes)
-//-------------------------------------------
+//----------------------------------------------------
+//  Vinyl Menu (only available for active collections)
+//----------------------------------------------------
 private fun addVinylToCollection() {
     val collection: Collection? = askUserToChooseActiveCollection()
     if (collection != null) {
@@ -326,7 +323,7 @@ fun deleteAVinyl() {
 }
 
 //------------------------------------
-//NOTE REPORTS MENU
+//  Collection Search Menu
 //------------------------------------
 fun searchCollections() {
     val searchTitle = readNextLine("Enter the name of collection you want to search: ")
@@ -339,7 +336,7 @@ fun searchCollections() {
 }
 
 //------------------------------------
-//ITEM REPORTS MENU
+//  Vinyl Search Menu
 //------------------------------------
 fun searchVinylByName() {
     val searchContents = readNextLine("Enter the album name to search by: ")
@@ -421,7 +418,7 @@ fun exitApp() {
 }
 
 //------------------------------------
-//HELPER FUNCTIONS
+//  Helper Functions
 //------------------------------------
 
 private fun askUserToChooseActiveCollection(): Collection? {
