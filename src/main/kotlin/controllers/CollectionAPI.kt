@@ -83,6 +83,70 @@ class CollectionAPI(serializerType: Serializer) {
         }
     }
 
+    fun searchVinylByArtist(searchString: String): String {
+        return if (numberOfCollections() == 0) "No collections stored"
+        else {
+            var listOfCollections = ""
+            for (collection in collections) {
+                for (vinyl in collection.vinyls) {
+                    if (vinyl.artist.contains(searchString, ignoreCase = true)) {
+                        listOfCollections += "${collection.collectionId}: ${collection.collectionName} \n\t${vinyl}\n"
+                    }
+                }
+            }
+            if (listOfCollections == "") "No vinyls found for: $searchString"
+            else listOfCollections
+        }
+    }
+
+    fun searchVinylByGenre(searchString: String): String {
+        return if (numberOfCollections() == 0) "No collections stored"
+        else {
+            var listOfCollections = ""
+            for (collection in collections) {
+                for (vinyl in collection.vinyls) {
+                    if (vinyl.genre.contains(searchString, ignoreCase = true)) {
+                        listOfCollections += "${collection.collectionId}: ${collection.collectionName} \n\t${vinyl}\n"
+                    }
+                }
+            }
+            if (listOfCollections == "") "No vinyls found for: $searchString"
+            else listOfCollections
+        }
+    }
+
+//    fun searchVinylBySize(searchInt: Int): String {
+//        return if (numberOfCollections() == 0) "No collections stored"
+//        else {
+//            var listOfCollections = ""
+//            for (collection in collections) {
+//                for (vinyl in collection.vinyls) {
+//                    if (vinyl.sizeInches.contains(searchInt, ignoreCase = true)) {
+//                        listOfCollections += "${collection.collectionId}: ${collection.collectionName} \n\t${vinyl}\n"
+//                    }
+//                }
+//            }
+//            if (listOfCollections == "") "No vinyls found for: $searchInt"
+//            else listOfCollections
+//        }
+//    }
+
+    fun searchVinylByColour(searchString: String): String {
+        return if (numberOfCollections() == 0) "No collections stored"
+        else {
+            var listOfCollections = ""
+            for (collection in collections) {
+                for (vinyl in collection.vinyls) {
+                    if (vinyl.colour.contains(searchString, ignoreCase = true)) {
+                        listOfCollections += "${collection.collectionId}: ${collection.collectionName} \n\t${vinyl}\n"
+                    }
+                }
+            }
+            if (listOfCollections == "") "No vinyls found for: $searchString"
+            else listOfCollections
+        }
+    }
+
     @Throws(Exception::class)
     fun load() {
         collections = serializer.read() as ArrayList<Collection>
@@ -93,3 +157,4 @@ class CollectionAPI(serializerType: Serializer) {
         serializer.write(collections)
     }
 }
+
