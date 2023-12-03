@@ -44,6 +44,7 @@ ex. Jessica Chitas
 
 ## Version History
 
+### V1.0
 - CRUD features for adding, searching, updating and deleting collections of vinyls
 - CRUD features for adding, searching, updating and deleting vinyls in collections
 - Added multi-page feature! Rather than having the whole GUI on one page, they are now organised into different pages.
