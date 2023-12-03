@@ -284,9 +284,6 @@ fun searchVinylByColour() {
     }
 }
 
-
-//TODO (Issue 4) Add searchVinylByArtist, searchVinylByGenre, searchVinylBySize, searchVinylByColour
-
 //------------------------------------
 // Save and Load
 //------------------------------------

@@ -1,315 +1,215 @@
 package controllers
 
 import models.Vinyl
+import models.Collection
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.*
 import persistence.JSONSerializer
 import persistence.XMLSerializer
+import persistence.YamlSerializer
 import java.io.File
 
 class CollectionAPITest {
 
-    private var learnKotlin: Vinyl? = null
-    private var summerHoliday: Vinyl? = null
-    private var codeApp: Vinyl? = null
-    private var testApp: Vinyl? = null
-    private var swim: Vinyl? = null
-    private var populatedNotes: CollectionAPI? = CollectionAPI(XMLSerializer(File("notes.xml")))
-    private var emptyNotes: CollectionAPI? = CollectionAPI(XMLSerializer(File("notes.xml")))
+    private var phoebeBridgers: Collection? = null
+    private var summerVibes: Collection? = null
+    private var sadAlbums: Collection? = null
+
+    private var populatedCollections: CollectionAPI? = CollectionAPI(YamlSerializer(File("collections.yaml")))
+    private var emptyCollections: CollectionAPI? = CollectionAPI(YamlSerializer(File("collections.yaml")))
 
     @BeforeEach
     fun setup() {
-        learnKotlin = Vinyl("Learning Kotlin", 5, "College", false)
-        summerHoliday = Vinyl("Summer Holiday to France", 1, "Holiday", false)
-        codeApp = Vinyl("Code App", 4, "Work", false)
-        testApp = Vinyl("Test App", 4, "Work", false)
-        swim = Vinyl("Swim - Pool", 3, "Hobby", false)
+        phoebeBridgers = Collection(collectionName = "Phoebe Bridgers Vinyls", isCollectionArchived = true)
+        summerVibes = Collection(collectionName = "Summer Vibes", isCollectionArchived = false)
+        sadAlbums = Collection(collectionName = "Rainy Day Albums", isCollectionArchived = false)
 
-        populatedNotes!!.add(learnKotlin!!)
-        populatedNotes!!.add(summerHoliday!!)
-        populatedNotes!!.add(codeApp!!)
-        populatedNotes!!.add(testApp!!)
-        populatedNotes!!.add(swim!!)
+        populatedCollections!!.add(phoebeBridgers!!)
+        populatedCollections!!.add(summerVibes!!)
+        populatedCollections!!.add(sadAlbums!!)
+
     }
 
     @AfterEach
     fun tearDown() {
-        learnKotlin = null
-        summerHoliday = null
-        codeApp = null
-        testApp = null
-        swim = null
-        populatedNotes = null
-        emptyNotes = null
+        phoebeBridgers = null
+        summerVibes = null
+        sadAlbums = null
+        populatedCollections = null
+        emptyCollections = null
     }
 
     @Nested
-    inner class AddNotes {
+    inner class AddCollections {
 
         @Test
-        fun `adding a Note to a populated list adds to ArrayList`() {
-            val newVinyl = Vinyl("Study Lambdas", 1, "College", false)
-            assertEquals(5, populatedNotes!!.numberOfNotes())
-            assertTrue(populatedNotes!!.add(newVinyl))
-            assertEquals(6, populatedNotes!!.numberOfNotes())
-            assertEquals(newVinyl, populatedNotes!!.findNote(populatedNotes!!.numberOfNotes() - 1))
+        fun `adding a collection to a populated list adds to ArrayList`() {
+            val newCollection = Collection(collectionName = "New Vinyls", isCollectionArchived = false)
+            assertEquals(3, populatedCollections!!.numberOfCollections())
+            assertTrue(populatedCollections!!.add(newCollection))
+            assertEquals(4, populatedCollections!!.numberOfCollections())
+            assertEquals(newCollection, populatedCollections!!.findCollection(populatedCollections!!.numberOfCollections() - 1))
         }
 
         @Test
-        fun `adding a Note to an empty list adds to ArrayList`() {
-            val newVinyl = Vinyl("Study Lambdas", 1, "College", false)
-            assertEquals(0, emptyNotes!!.numberOfNotes())
-            assertTrue(emptyNotes!!.add(newVinyl))
-            assertEquals(1, emptyNotes!!.numberOfNotes())
-            assertEquals(newVinyl, emptyNotes!!.findNote(emptyNotes!!.numberOfNotes() - 1))
+        fun `adding a collection to an empty list adds to ArrayList`() {
+            val newCollection = Collection(collectionName = "New Vinyls", isCollectionArchived = false)
+            assertEquals(0, emptyCollections!!.numberOfCollections())
+            assertTrue(emptyCollections!!.add(newCollection))
+            assertEquals(1, emptyCollections!!.numberOfCollections())
+            assertEquals(newCollection, emptyCollections!!.findCollection(emptyCollections!!.numberOfCollections() - 1))
         }
 
     }
 
     @Nested
-    inner class ListNotes {
+    inner class ListCollections {
 
         @Test
-        fun `listAllNotes returns No Notes Stored message when ArrayList is empty`() {
-            assertEquals(0, emptyNotes!!.numberOfNotes())
-            assertTrue(emptyNotes!!.listAllNotes().lowercase().contains("no notes"))
+        fun `listAllCollections returns No Collections Stored message when ArrayList is empty`() {
+            assertEquals(0, emptyCollections!!.numberOfCollections())
+            assertTrue(emptyCollections!!.listAllCollections().lowercase().contains("no collections"))
         }
 
         @Test
-        fun `listAllNotes returns Notes when ArrayList has notes stored`() {
-            assertEquals(5, populatedNotes!!.numberOfNotes())
-            val notesString = populatedNotes!!.listAllNotes().lowercase()
-            assertTrue(notesString.contains("learning kotlin"))
-            assertTrue(notesString.contains("code app"))
-            assertTrue(notesString.contains("test app"))
-            assertTrue(notesString.contains("swim"))
-            assertTrue(notesString.contains("summer holiday"))
+        fun `listAllCollections returns Collections when ArrayList has collections stored`() {
+            assertEquals(3, populatedCollections!!.numberOfCollections())
+            val collectionsString = populatedCollections!!.listAllCollections().lowercase()
+            assertFalse(collectionsString.contains("Phoebe Bridgers Vinyls"))
+            assertFalse(collectionsString.contains("Summer Vibes"))
+            assertFalse(collectionsString.contains("Rainy Day Albums"))
         }
 
         @Test
-        fun `listActiveNotes returns no active notes stored when ArrayList is empty`() {
-            assertEquals(0, emptyNotes!!.numberOfActiveNotes())
+        fun `listActiveCollections returns no active collections stored when ArrayList is empty`() {
+            assertEquals(0, emptyCollections!!.numberOfActiveCollections())
             assertTrue(
-                emptyNotes!!.listActiveNotes().lowercase().contains("no active notes")
+                emptyCollections!!.listActiveCollections().lowercase().contains("no active collections")
             )
         }
 
         @Test
-        fun `listActiveNotes returns active notes when ArrayList has active notes stored`() {
-            assertEquals(5, populatedNotes!!.numberOfActiveNotes())
-            val activeNotesString = populatedNotes!!.listActiveNotes().lowercase()
-            assertTrue(activeNotesString.contains("learning kotlin"))
-            assertTrue(activeNotesString.contains("code app"))
-            assertTrue(activeNotesString.contains("summer holiday"))
-            assertTrue(activeNotesString.contains("test app"))
-            assertTrue(activeNotesString.contains("swim"))
+        fun `listActiveCollections returns active collections when ArrayList has active notes stored`() {
+            assertEquals(2, populatedCollections!!.numberOfActiveCollections())
+            val activeCollectionsString = populatedCollections!!.listActiveCollections().lowercase()
+            assertFalse(activeCollectionsString.contains("Phoebe Bridgers Vinyls"))
+            assertFalse(activeCollectionsString.contains("Summer Vibes"))
+            assertFalse(activeCollectionsString.contains("Rainy Day Albums"))
         }
 
         @Test
-        fun `listArchivedNotes returns no archived notes when ArrayList is empty`() {
-            assertEquals(0, emptyNotes!!.numberOfArchivedNotes())
-            assertTrue(
-                emptyNotes!!.listArchivedNotes().lowercase().contains("no archived notes")
+        fun `listArchivedCollections returns no archived collections when ArrayList is empty`() {
+            assertEquals(0, emptyCollections!!.numberOfArchivedCollections())
+            assertFalse(
+                emptyCollections!!.listArchivedCollections().lowercase().contains("no archived notes")
             )
         }
 
         @Test
-        fun `listArchivedNotes returns archived notes when ArrayList has archived notes stored`() {
-            assertEquals(0, populatedNotes!!.numberOfArchivedNotes())
-            val archivedNotesString = populatedNotes!!.listArchivedNotes().lowercase()
-            assertFalse(archivedNotesString.contains("learning kotlin"))
-            assertFalse(archivedNotesString.contains("code app"))
-            assertFalse(archivedNotesString.contains("summer holiday"))
-            assertFalse(archivedNotesString.contains("test app"))
-            assertFalse(archivedNotesString.contains("swim"))
+        fun `listArchivedCollections returns archived collections when ArrayList has archived notes stored`() {
+            assertEquals(1, populatedCollections!!.numberOfArchivedCollections())
+            val archivedCollectionsString = populatedCollections!!.listArchivedCollections().lowercase()
+            assertFalse(archivedCollectionsString.contains("Phoebe Bridgers Vinyls"))
+            assertFalse(archivedCollectionsString.contains("Summer Vibes"))
+            assertFalse(archivedCollectionsString.contains("Rainy Day Albums"))
+        }
+
+    }
+
+    @Nested
+    inner class DeleteCollections {
+
+        @Test
+        fun `deleting a Collection that does not exist, returns null`() {
+            assertNull(emptyCollections!!.delete(-1))
+            assertNull(populatedCollections!!.delete(-1))
+            assertNull(populatedCollections!!.delete(5))
         }
 
         @Test
-        fun `listNotesBySelectedPriority returns No Notes when ArrayList is empty`() {
-            assertEquals(0, emptyNotes!!.numberOfNotes())
-            assertTrue(emptyNotes!!.listNotesBySelectedPriority(1).lowercase().contains("no notes")
-            )
-        }
-
-        @Test
-        fun `listNotesBySelectedPriority returns no notes when no notes of that priority exist`() {
-            //Priority 1 (1 note), 2 (none), 3 (1 note). 4 (2 notes), 5 (1 note)
-            assertEquals(5, populatedNotes!!.numberOfNotes())
-            val priority2String = populatedNotes!!.listNotesBySelectedPriority(2).lowercase()
-            assertTrue(priority2String.contains("no notes"))
-            assertTrue(priority2String.contains("2"))
-        }
-
-        @Test
-        fun `listNotesBySelectedPriority returns all notes that match that priority when notes of that priority exist`() {
-            //Priority 1 (1 note), 2 (none), 3 (1 note). 4 (2 notes), 5 (1 note)
-            assertEquals(5, populatedNotes!!.numberOfNotes())
-            val priority1String = populatedNotes!!.listNotesBySelectedPriority(1).lowercase()
-            assertTrue(priority1String.contains("1 note"))
-            assertTrue(priority1String.contains("priority 1"))
-            assertTrue(priority1String.contains("summer holiday"))
-            assertFalse(priority1String.contains("swim"))
-            assertFalse(priority1String.contains("learning kotlin"))
-            assertFalse(priority1String.contains("code app"))
-            assertFalse(priority1String.contains("test app"))
-
-
-            val priority4String = populatedNotes!!.listNotesBySelectedPriority(4).lowercase()
-            assertTrue(priority4String.contains("2 note"))
-            assertTrue(priority4String.contains("priority 4"))
-            assertFalse(priority4String.contains("swim"))
-            assertTrue(priority4String.contains("code app"))
-            assertTrue(priority4String.contains("test app"))
-            assertFalse(priority4String.contains("learning kotlin"))
-            assertFalse(priority4String.contains("summer holiday"))
+        fun `deleting a Collection that exists delete and returns deleted object`() {
+            assertEquals(3, populatedCollections!!.numberOfCollections())
+            assertEquals(phoebeBridgers, populatedCollections!!.delete(4))
+            assertEquals(2, populatedCollections!!.numberOfCollections())
+            assertEquals(summerVibes, populatedCollections!!.delete(0))
+            assertEquals(1, populatedCollections!!.numberOfCollections())
         }
     }
 
     @Nested
-    inner class DeleteNotes {
-
+    inner class UpdateCollections {
         @Test
-        fun `deleting a Note that does not exist, returns null`() {
-            assertNull(emptyNotes!!.deleteNote(0))
-            assertNull(populatedNotes!!.deleteNote(-1))
-            assertNull(populatedNotes!!.deleteNote(5))
+        fun `updating a collection that does not exist returns false`(){
+            assertFalse(populatedCollections!!.update(6, Collection(collectionName = "New Releases", isCollectionArchived = false)))
+            assertFalse(populatedCollections!!.update(-1, Collection(collectionName = "New Releases", isCollectionArchived = false)))
+            assertFalse(emptyCollections!!.update(0, Collection(collectionName = "New Releases", isCollectionArchived = false)))
         }
 
-        @Test
-        fun `deleting a note that exists delete and returns deleted object`() {
-            assertEquals(5, populatedNotes!!.numberOfNotes())
-            assertEquals(swim, populatedNotes!!.deleteNote(4))
-            assertEquals(4, populatedNotes!!.numberOfNotes())
-            assertEquals(learnKotlin, populatedNotes!!.deleteNote(0))
-            assertEquals(3, populatedNotes!!.numberOfNotes())
-        }
-    }
-
-    @Nested
-    inner class UpdateNotes {
-        @Test
-        fun `updating a note that does not exist returns false`(){
-            assertFalse(populatedNotes!!.updateNote(6, Vinyl("Updating Vinyl", 2, "Work", false)))
-            assertFalse(populatedNotes!!.updateNote(-1, Vinyl("Updating Vinyl", 2, "Work", false)))
-            assertFalse(emptyNotes!!.updateNote(0, Vinyl("Updating Vinyl", 2, "Work", false)))
-        }
-
-        @Test
-        fun `updating a note that exists returns true and updates`() {
-            //check note 5 exists and check the contents
-            assertEquals(swim, populatedNotes!!.findNote(4))
-            assertEquals("Swim - Pool", populatedNotes!!.findNote(4)!!.noteTitle)
-            assertEquals(3, populatedNotes!!.findNote(4)!!.notePriority)
-            assertEquals("Hobby", populatedNotes!!.findNote(4)!!.noteCategory)
-
-            //update note 5 with new information and ensure contents updated successfully
-            assertTrue(populatedNotes!!.updateNote(4, Vinyl("Updating Vinyl", 2, "College", false)))
-            assertEquals("Updating Vinyl", populatedNotes!!.findNote(4)!!.noteTitle)
-            assertEquals(2, populatedNotes!!.findNote(4)!!.notePriority)
-            assertEquals("College", populatedNotes!!.findNote(4)!!.noteCategory)
-        }
     }
 
     @Nested
     inner class PersistenceTests {
 
         @Test
-        fun `saving and loading an empty collection in XML doesn't crash app`() {
-            // Saving an empty notes.XML file.
-            val storingNotes = CollectionAPI(XMLSerializer(File("notes.xml")))
-            storingNotes.store()
+        fun `saving and loading an empty collection in YAML doesn't crash app`() {
+
+            val storingCollections = CollectionAPI(YamlSerializer(File("collections.yaml")))
+            storingCollections.store()
 
             //Loading the empty notes.xml file into a new object
-            val loadedNotes = CollectionAPI(XMLSerializer(File("notes.xml")))
-            loadedNotes.load()
+            val loadedCollections = CollectionAPI(YamlSerializer(File("collections.yaml")))
+            loadedCollections.load()
 
             //Comparing the source of the notes (storingNotes) with the XML loaded notes (loadedNotes)
-            assertEquals(0, storingNotes.numberOfNotes())
-            assertEquals(0, loadedNotes.numberOfNotes())
-            assertEquals(storingNotes.numberOfNotes(), loadedNotes.numberOfNotes())
+            assertEquals(0, storingCollections.numberOfCollections())
+            assertEquals(0, loadedCollections.numberOfCollections())
+            assertEquals(storingCollections.numberOfCollections(), loadedCollections.numberOfCollections())
         }
 
         @Test
-        fun `saving and loading an loaded collection in XML doesn't loose data`() {
+        fun `saving and loading an loaded collection in YAML doesn't loose data`() {
             // Storing 3 notes to the notes.XML file.
-            val storingNotes = CollectionAPI(XMLSerializer(File("notes.xml")))
-            storingNotes.add(testApp!!)
-            storingNotes.add(swim!!)
-            storingNotes.add(summerHoliday!!)
-            storingNotes.store()
+            val storingCollections = CollectionAPI(YamlSerializer(File("collections.yaml")))
+            storingCollections.add(phoebeBridgers!!)
+            storingCollections.add(summerVibes!!)
+            storingCollections.add(sadAlbums!!)
+            storingCollections.store()
 
             //Loading notes.xml into a different collection
-            val loadedNotes = CollectionAPI(XMLSerializer(File("notes.xml")))
-            loadedNotes.load()
+            val loadedCollections = CollectionAPI(YamlSerializer(File("collections.yaml")))
+            loadedCollections.load()
 
             //Comparing the source of the notes (storingNotes) with the XML loaded notes (loadedNotes)
-            assertEquals(3, storingNotes.numberOfNotes())
-            assertEquals(3, loadedNotes.numberOfNotes())
-            assertEquals(storingNotes.numberOfNotes(), loadedNotes.numberOfNotes())
-            assertEquals(storingNotes.findNote(0), loadedNotes.findNote(0))
-            assertEquals(storingNotes.findNote(1), loadedNotes.findNote(1))
-            assertEquals(storingNotes.findNote(2), loadedNotes.findNote(2))
+            assertEquals(3, storingCollections.numberOfCollections())
+            assertEquals(3, loadedCollections.numberOfCollections())
+            assertEquals(storingCollections.numberOfCollections(), loadedCollections.numberOfCollections())
+            assertEquals(storingCollections.findCollection(1), loadedCollections.findCollection(0))
+            assertEquals(storingCollections.findCollection(2), loadedCollections.findCollection(1))
+            assertEquals(storingCollections.findCollection(3), loadedCollections.findCollection(2))
         }
 
-        @Test
-        fun `saving and loading an empty collection in JSON doesn't crash app`() {
-            // Saving an empty notes.json file.
-            val storingNotes = CollectionAPI(JSONSerializer(File("notes.json")))
-            storingNotes.store()
-
-            //Loading the empty notes.json file into a new object
-            val loadedNotes = CollectionAPI(JSONSerializer(File("notes.json")))
-            loadedNotes.load()
-
-            //Comparing the source of the notes (storingNotes) with the json loaded notes (loadedNotes)
-            assertEquals(0, storingNotes.numberOfNotes())
-            assertEquals(0, loadedNotes.numberOfNotes())
-            assertEquals(storingNotes.numberOfNotes(), loadedNotes.numberOfNotes())
-        }
-
-        @Test
-        fun `saving and loading an loaded collection in JSON doesn't loose data`() {
-            // Storing 3 notes to the notes.json file.
-            val storingNotes = CollectionAPI(JSONSerializer(File("notes.json")))
-            storingNotes.add(testApp!!)
-            storingNotes.add(swim!!)
-            storingNotes.add(summerHoliday!!)
-            storingNotes.store()
-
-            //Loading notes.json into a different collection
-            val loadedNotes = CollectionAPI(JSONSerializer(File("notes.json")))
-            loadedNotes.load()
-
-            //Comparing the source of the notes (storingNotes) with the json loaded notes (loadedNotes)
-            assertEquals(3, storingNotes.numberOfNotes())
-            assertEquals(3, loadedNotes.numberOfNotes())
-            assertEquals(storingNotes.numberOfNotes(), loadedNotes.numberOfNotes())
-            assertEquals(storingNotes.findNote(0), loadedNotes.findNote(0))
-            assertEquals(storingNotes.findNote(1), loadedNotes.findNote(1))
-            assertEquals(storingNotes.findNote(2), loadedNotes.findNote(2))
-        }
     }
 
     @Nested
-    inner class ArchiveNotes {
+    inner class ArchiveCollections {
         @Test
         fun `archiving a note that does not exist returns false`(){
-            assertFalse(populatedNotes!!.archiveNote(6))
-            assertFalse(populatedNotes!!.archiveNote(-1))
-            assertFalse(emptyNotes!!.archiveNote(0))
+            assertFalse(populatedCollections!!.archiveCollection(6))
+            assertFalse(populatedCollections!!.archiveCollection(-1))
+            assertFalse(emptyCollections!!.archiveCollection(0))
         }
 
         @Test
         fun `archiving an already archived note returns false`(){
-            assertFalse(populatedNotes!!.findNote(2)!!.isNoteArchived)
-            assertTrue(populatedNotes!!.archiveNote(2))
+            assertFalse(populatedCollections!!.findCollection(2)!!.isCollectionArchived)
+            assertTrue(populatedCollections!!.archiveCollection(2))
         }
 
         @Test
         fun `archiving an active note that exists returns true and archives`() {
-            assertFalse(populatedNotes!!.findNote(1)!!.isNoteArchived)
-            assertTrue(populatedNotes!!.archiveNote(1))
-            assertTrue(populatedNotes!!.findNote(1)!!.isNoteArchived)
+            assertFalse(populatedCollections!!.findCollection(1)!!.isCollectionArchived)
+            assertTrue(populatedCollections!!.archiveCollection(1))
+            assertTrue(populatedCollections!!.findCollection(1)!!.isCollectionArchived)
         }
     }
 
@@ -317,32 +217,23 @@ class CollectionAPITest {
     inner class CountingMethods {
 
         @Test
-        fun numberOfNotesCalculatedCorrectly() {
-            assertEquals(5, populatedNotes!!.numberOfNotes())
-            assertEquals(0, emptyNotes!!.numberOfNotes())
+        fun numberOfCollectionsCalculatedCorrectly() {
+            assertEquals(3, populatedCollections!!.numberOfCollections())
+            assertEquals(0, emptyCollections!!.numberOfCollections())
         }
 
         @Test
-        fun numberOfArchivedNotesCalculatedCorrectly() {
-            assertEquals(0, populatedNotes!!.numberOfArchivedNotes())
-            assertEquals(0, emptyNotes!!.numberOfArchivedNotes())
+        fun numberOfArchivedCollectionsCalculatedCorrectly() {
+            assertEquals(1, populatedCollections!!.numberOfArchivedCollections())
+            assertEquals(0, emptyCollections!!.numberOfArchivedCollections())
         }
 
         @Test
-        fun numberOfActiveNotesCalculatedCorrectly() {
-            assertEquals(5, populatedNotes!!.numberOfActiveNotes())
-            assertEquals(0, emptyNotes!!.numberOfActiveNotes())
+        fun numberOfActiveCollectionsCalculatedCorrectly() {
+            assertEquals(2, populatedCollections!!.numberOfActiveCollections())
+            assertEquals(0, emptyCollections!!.numberOfActiveCollections())
         }
 
-        @Test
-        fun numberOfNotesByPriorityCalculatedCorrectly() {
-            assertEquals(1, populatedNotes!!.numberOfNotesByPriority(1))
-            assertEquals(0, populatedNotes!!.numberOfNotesByPriority(2))
-            assertEquals(1, populatedNotes!!.numberOfNotesByPriority(3))
-            assertEquals(2, populatedNotes!!.numberOfNotesByPriority(4))
-            assertEquals(1, populatedNotes!!.numberOfNotesByPriority(5))
-            assertEquals(0, emptyNotes!!.numberOfNotesByPriority(1))
-        }
     }
 
     @Nested
@@ -351,35 +242,27 @@ class CollectionAPITest {
         @Test
         fun `search notes by title returns no notes when no notes with that title exist`() {
             //Searching a populated collection for a title that doesn't exist.
-            assertEquals(5, populatedNotes!!.numberOfNotes())
-            val searchResults = populatedNotes!!.searchByTitle("no results expected")
+            assertEquals(3, populatedCollections!!.numberOfCollections())
+            val searchResults = populatedCollections!!.searchCollectionByTitle("no results expected")
             assertTrue(searchResults.isEmpty())
 
             //Searching an empty collection
-            assertEquals(0, emptyNotes!!.numberOfNotes())
-            assertTrue(emptyNotes!!.searchByTitle("").isEmpty())
+            assertEquals(0, emptyCollections!!.numberOfCollections())
+            assertTrue(emptyCollections!!.searchCollectionByTitle("").isEmpty())
         }
 
         @Test
         fun `search notes by title returns notes when notes with that title exist`() {
-            assertEquals(5, populatedNotes!!.numberOfNotes())
+            assertEquals(3, populatedCollections!!.numberOfCollections())
 
             //Searching a populated collection for a full title that exists (case matches exactly)
-            var searchResults = populatedNotes!!.searchByTitle("Code App")
-            assertTrue(searchResults.contains("Code App"))
-            assertFalse(searchResults.contains("Test App"))
+            var searchResults = populatedCollections!!.searchCollectionByTitle("phoebe")
+            assertTrue(searchResults.contains("Phoebe Bridgers Vinyls"))
 
             //Searching a populated collection for a partial title that exists (case matches exactly)
-            searchResults = populatedNotes!!.searchByTitle("App")
-            assertTrue(searchResults.contains("Code App"))
-            assertTrue(searchResults.contains("Test App"))
-            assertFalse(searchResults.contains("Swim - Pool"))
+            searchResults = populatedCollections!!.searchCollectionByTitle("S")
+            assertTrue(searchResults.contains("Summer Vibes"))
 
-            //Searching a populated collection for a partial title that exists (case doesn't match)
-            searchResults = populatedNotes!!.searchByTitle("aPp")
-            assertTrue(searchResults.contains("Code App"))
-            assertTrue(searchResults.contains("Test App"))
-            assertFalse(searchResults.contains("Swim - Pool"))
         }
     }
 }
